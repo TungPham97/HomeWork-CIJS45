@@ -66,20 +66,18 @@ view.setActiveScreen = (screenName) => {
         const message = {
           content: sendMessageForm.message.value,
           owner: model.currentUser.email,
-        }
-        const botMsg = {
-          content: sendMessageForm.message.value,
-          owner: 'Bot',
+          createdAt: (new Date()).toISOString()
         }
         const reg = /\S/g;
         if (message.content == '' || !reg.test(message.content)) {
           sendMessageForm.message.value = '';
         } else {
-          view.addMessage(message);
-          view.addMessage(botMsg);
+          model.addMessage(message);
         }
         sendMessageForm.message.value = '';
       })
+      model.loadConversations();
+      model.listenConversationsChange();
       break;
   }
 }
@@ -113,3 +111,11 @@ view.addMessage = (message) => {
     out.scrollTop = out.scrollHeight - out.clientHeight;
 }
 
+view.showCurrentConversation = () => {
+  // Change title conversation
+  document.getElementsByClassName('conversation-header')[0].innerText = model.currentConversation.title;
+  // Print messages
+  for (message of model.currentConversation.messages) {
+    view.addMessage(message);
+  }
+}

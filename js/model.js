@@ -1,5 +1,8 @@
 const model = {};
 model.currentUser = undefined;
+model.conversations = undefined;
+model.currentConversation = undefined;
+model.collectionName = 'conversations';
 
 model.register = async (email, password, firstName, lastName) => {
   try {
@@ -49,6 +52,7 @@ model.chat = async () => {
             displayName: user.displayName,
             email: user.email
           }
+
           view.setActiveScreen('chatScreen');
         } else {
           view.setActiveScreen('loginScreen');
@@ -62,4 +66,59 @@ model.chat = async () => {
   catch (err) {
     console.log(err);
   }
+}
+
+model.addMessage = (message) => {
+  const dataToUpdate = {
+    messages: firebase.firestore.FieldValue.arrayUnion(message)
+  }
+  firebase.firestore().collection(model.collectionName).doc('fAnPTlov2jqtwTATeISY').update(dataToUpdate);
+}
+
+model.loadConversations = async () => {
+  console.log(model.currentUser);
+  const response = await firebase
+    .firestore()
+    .collection(model.collectionName)
+    .where('users', 'array-contains', model.currentUser.email)
+    .get();
+  model.conversations = getDataFromDocs(response.docs);
+  if (model.conversations.length > 0) {
+    model.currentConversation = model.conversations[0];
+    view.showCurrentConversation();
+  }
+}
+
+model.listenConversationsChange = () => {
+  let isFirstRun = true;
+  firebase
+    .firestore()
+    .collection(model.collectionName)
+    .where('users', 'array-contains', model.currentUser.email)
+    .onSnapshot((res) => {
+      if (isFirstRun) {
+        isFirstRun = false;
+        return
+      }
+      const docChanges = res.docChanges();
+      for (oneChange of docChanges) {
+        const type = oneChange.type;
+        if (type === 'modified') {
+          const docData = getDataFromDoc(oneChange.doc);
+          // Update conversations
+          for (let index = 0; index < model.conversations.length; index++) {
+            if (model.conversations[index].id === docData.id) {
+              model.conversations[index] = docData
+            }
+          }
+          // Update currentConversation
+          if (docData.id === model.currentConversation.id) {
+            model.currentConversation = docData;
+            const lastMessage = docData.messages[docData.messages.length - 1];
+            console.log(lastMessage);
+            view.addMessage(lastMessage);
+          }
+        }
+      }
+    })
 }
