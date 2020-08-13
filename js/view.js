@@ -85,13 +85,28 @@ view.setActiveScreen = (screenName, fromCreateConversation = false) => {
         model.loadConversations();
         model.listenConversationsChange();
       } else {
-        model.
+        view.showConversations();
+        view.showCurrentConversation();
       }
       break;
+
+    // Create conversation
     case 'createConversation':
       document.getElementById('app').innerHTML = components.createConversation;
       document.querySelector('#back-to-chat').addEventListener('click', () => {
         view.setActiveScreen('chatScreen', true);
+      })
+      document.querySelector('#create-conversation-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        let nameConversation = event.target.conversationTitle.value;
+        let emailFriend = event.target.conversationEmail.value;
+        console.log(nameConversation, emailFriend);
+        const conversationToAdd = {
+          title: nameConversation,
+          message: '',
+          users: [emailFriend],
+        };
+        firebase.firestore().collection('conversations').add(conversationToAdd);
       })
   }
 }
