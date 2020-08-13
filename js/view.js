@@ -54,7 +54,6 @@ view.setActiveScreen = (screenName, fromCreateConversation = false) => {
       redirectToRegister.addEventListener('click', (e) => {
         view.setActiveScreen('registerScreen');
       })
-
       break;
 
     // Chat Screen
@@ -100,14 +99,15 @@ view.setActiveScreen = (screenName, fromCreateConversation = false) => {
         event.preventDefault();
         let nameConversation = event.target.conversationTitle.value;
         let emailFriend = event.target.conversationEmail.value;
-        console.log(nameConversation, emailFriend);
         const conversationToAdd = {
           title: nameConversation,
           message: '',
           users: [emailFriend],
         };
-        firebase.firestore().collection('conversations').add(conversationToAdd);
+
+        controller.createConversation(event.target.conversationTitle, event.target.conversationEmail);
       })
+      break;
   }
 }
 

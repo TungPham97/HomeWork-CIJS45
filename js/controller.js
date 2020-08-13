@@ -106,3 +106,21 @@ controller.login = (inputs) => {
   }
 }
 
+// Handle Create Conversation
+controller.createConversation = (nameConversation, emailFriend) => {
+  checkRequired([nameConversation, emailFriend]);
+  checkEmail(emailFriend);
+  if (
+    !checkRequired([nameConversation, emailFriend]) &&
+    checkEmail(emailFriend)
+  ) {
+    firebase.firestore().collection('conversations').add({
+      title: nameConversation.value,
+      message: '',
+      users: [emailFriend.value]
+    });
+    view.setActiveScreen('chatScreen');
+  } else {
+    console.error('Error!');
+  }
+}
