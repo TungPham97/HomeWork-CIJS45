@@ -54,6 +54,12 @@
   cursor: pointer;
 }
 
+.btn-light {
+  background: none;
+  border: 1px solid #ddbbdd;
+  color: #333;
+}
+
 .input-wrapper div.error {
   color: #ff0000;
   margin: 3px 0 0 3px;
@@ -65,4 +71,14 @@
 
 #redirect-to-register {
   cursor: pointer;
+}
+
+.header {
+  height: 60px;
+  background-color: #037bfe;
+  text-align: center;
+  line-height: 60px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 2rem;
 }

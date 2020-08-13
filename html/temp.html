@@ -11,39 +11,26 @@
 </head>
 
 <body>
-  <div class="chat-container">
+  <div class="create-conversation-container">
     <div class="header">
-      My Chat
+      My chat
     </div>
-    <div class="main">
-      <div class="conversation-detail">
-        <div class="conversation-header">
-          First conversation
+    <div class="main" style='padding: 50px 20%'>
+      <form id="create-conversation-form">
+        <h2 style="margin-bottom: 20px">
+          Create a new conversation
+        </h2>
+        <div class="input-wrapper">
+          <input type='text' placeholder="Conversation name" name='conversationTitle'>
+          <div class="error" id='conversation-name-error'></div>
         </div>
-        <div class="list-messages">
-          <div class="message-container mine">
-            <div class="content">
-              Hello world
-            </div>
-          </div>
-          <div class="message-container other">
-            <div class="owner">
-              Tungpx97@gmail.com
-            </div>
-            <div class="content">
-              Goodbye world
-            </div>
-          </div>
+        <div class="input-wrapper">
+          <input type='text' placeholder="Friend email" name='conversationEmail'>
+          <div class="error" id='conversation-email-error'></div>
         </div>
-        <form id='send-message-form'>
-          <div class="input-wrapper">
-            <input type="text" name='message' placeholder="Type a message" />
-          </div>
-          <button type="submit">
-            <i class="fa fa-paper-plane" aria-hidden="true"></i>
-          </button>
-        </form>
-      </div>
+        <button class="btn" type='submit'>Save</button>
+        <button class="btn btn-light" id='back-to-chat' type="button">Cancel</button>
+      </form>
     </div>
   </div>
 </body>
