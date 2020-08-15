@@ -2,9 +2,7 @@ const controller = {};
 
 // Show error message
 function showError(input, message) {
-  const error = input.nextElementSibling;
-  error.innerText = message;
-  input.className = 'error';
+  view.setErrorMessage(input, message);
 }
 
 // Show success
@@ -106,3 +104,22 @@ controller.login = (inputs) => {
   }
 }
 
+controller.createConversation = ({ conversationTitle, conversationEmail }) => {
+  if (conversationTitle.value.trim() === '') {
+    showError(conversationTitle, 'Please input conversation name')
+  } else {
+    showSuccess(conversationTitle);
+  }
+  checkEmail(conversationEmail);
+
+  // Push firebase
+  if (conversationTitle.value.trim() !== '' && checkEmail(conversationEmail)) {
+    const data = {
+      title: conversationTitle.value,
+      user: [conversationEmail.value, model.currentUser.email],
+      createdAt: (new Date()).toISOString(),
+      messages: [],
+    }
+    model.createConversation(data);
+  }
+}

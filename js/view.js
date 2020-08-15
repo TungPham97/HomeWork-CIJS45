@@ -68,16 +68,14 @@ view.setActiveScreen = (screenName, fromCreateConversation = false) => {
       const sendMessageForm = document.getElementById('send-message-form');
       sendMessageForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const message = {
-          content: sendMessageForm.message.value,
-          owner: model.currentUser.email,
-          createdAt: (new Date()).toISOString()
-        }
-        const reg = /\S/g;
-        if (message.content == '' || !reg.test(message.content)) {
-          sendMessageForm.message.value = '';
-        } else {
-          model.addMessage(message);
+        if (sendMessageForm.message.value.trim() !== '') {
+          const message = {
+            content: sendMessageForm.message.value,
+            owner: model.currentUser.email,
+            createdAt: (new Date()).toISOString()
+          }
+          model.addMessage(message)
+          sendMessageForm.message.value = ''
         }
         sendMessageForm.message.value = '';
       })
@@ -85,14 +83,27 @@ view.setActiveScreen = (screenName, fromCreateConversation = false) => {
         model.loadConversations();
         model.listenConversationsChange();
       } else {
-        model.
+        view.showConversations();
+        view.showCurrentConversation();
       }
       break;
+
+    // Create conversation
     case 'createConversation':
       document.getElementById('app').innerHTML = components.createConversation;
       document.querySelector('#back-to-chat').addEventListener('click', () => {
         view.setActiveScreen('chatScreen', true);
       })
+      const createConversationForm = document.getElementById('create-conversation-form');
+      createConversationForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = {
+          conversationTitle: createConversationForm.conversationTitle,
+          conversationEmail: createConversationForm.conversationEmail,
+        }
+        controller.createConversation(data);
+      })
+      break;
   }
 }
 
@@ -145,6 +156,7 @@ view.addConversation = (conversation) => {
   const conversationWrapper = document.createElement('div');
   conversationWrapper.className = 'conversation cursor-pointer';
   if (model.currentConversation.id == conversation.id) {
+    console.log("current");
     conversationWrapper.classList.add('current');
   }
   conversationWrapper.innerHTML = `
@@ -157,11 +169,22 @@ view.addConversation = (conversation) => {
     conversationWrapper.classList.add('current');
 
     // Thay doi model.currentConversation
-    model.currentConversation = conversation;
+    for (oneConversation of model.conversation) {
+      if (oneConversation.id == conversation.id) {
+        model.currentConversation = conversation;
+      }
+    }
 
     // In cac tin nhan cua model.currentConversation
     view.showCurrentConversation();
   })
+  console.log(conversationWrapper);
   document.querySelector('.list-conversation').appendChild(conversationWrapper);
 
+}
+
+view.setErrorMessage = (input, message) => {
+  const error = input.nextElementSibling;
+  error.innerText = message;
+  input.className = 'error';
 }

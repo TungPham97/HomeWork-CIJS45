@@ -97,6 +97,7 @@ model.listenConversationsChange = () => {
     .collection(model.collectionName)
     .where('users', 'array-contains', model.currentUser.email)
     .onSnapshot((res) => {
+      console.log(res);
       if (isFirstRun) {
         isFirstRun = false;
         return
@@ -122,4 +123,9 @@ model.listenConversationsChange = () => {
         }
       }
     })
+}
+
+model.createConversation = (data) => {
+  firebase.firestore().collection(model.collectionName).add(data);
+  view.setActiveScreen('chatScreen', true);
 }
