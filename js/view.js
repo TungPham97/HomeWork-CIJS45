@@ -86,6 +86,18 @@ view.setActiveScreen = (screenName, fromCreateConversation = false) => {
         view.showConversations();
         view.showCurrentConversation();
       }
+
+      // Add user
+      const addUserForm = document.getElementById('add-user-form');
+      addUserForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        let emailToAdd = addUserForm.email.value;
+        const dataToUpdate = {
+          users: firebase.firestore.FieldValue.arrayUnion(emailToAdd),
+        }
+
+        firebase.firestore().collection(model.collectionName).doc(model.currentConversation.id).update(dataToUpdate);
+      })
       break;
 
     // Create conversation
@@ -144,6 +156,22 @@ view.showCurrentConversation = () => {
   for (message of model.currentConversation.messages) {
     view.addMessage(message);
   }
+  // Show list users
+  view.showListUsers(model.currentConversation.users);
+}
+
+view.showListUsers = (users) => {
+  document.querySelector('.list-user').innerHTML = '';
+  for (user of users) {
+    view.addUser(user);
+  }
+}
+
+view.addUser = (user) => {
+  const userWrapper = document.createElement('div');
+  userWrapper.classList.add('user');
+  userWrapper.innerText = user;
+  document.querySelector('.list-user').appendChild(userWrapper);
 }
 
 view.showConversations = () => {
@@ -156,7 +184,6 @@ view.addConversation = (conversation) => {
   const conversationWrapper = document.createElement('div');
   conversationWrapper.className = 'conversation cursor-pointer';
   if (model.currentConversation.id == conversation.id) {
-    console.log("current");
     conversationWrapper.classList.add('current');
   }
   conversationWrapper.innerHTML = `
@@ -169,16 +196,15 @@ view.addConversation = (conversation) => {
     conversationWrapper.classList.add('current');
 
     // Thay doi model.currentConversation
-    for (oneConversation of model.conversation) {
+    for (oneConversation of model.conversations) {
       if (oneConversation.id == conversation.id) {
-        model.currentConversation = conversation;
+        model.currentConversation = oneConversation;
       }
     }
 
     // In cac tin nhan cua model.currentConversation
     view.showCurrentConversation();
   })
-  console.log(conversationWrapper);
   document.querySelector('.list-conversation').appendChild(conversationWrapper);
 
 }

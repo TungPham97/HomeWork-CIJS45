@@ -116,7 +116,7 @@ controller.createConversation = ({ conversationTitle, conversationEmail }) => {
   if (conversationTitle.value.trim() !== '' && checkEmail(conversationEmail)) {
     const data = {
       title: conversationTitle.value,
-      user: [conversationEmail.value, model.currentUser.email],
+      users: [conversationEmail.value, model.currentUser.email],
       createdAt: (new Date()).toISOString(),
       messages: [],
     }

@@ -34,7 +34,7 @@
   flex-direction: column;
   height: 100%;
   /* flex-grow: 1; */
-  width: 85%;
+  width: 70%;
 }
 
 .conversation-detail .list-messages {
@@ -132,4 +132,17 @@
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.chat-container .aside-right{
+  padding: 10px;
+  border-left: 1px solid #dbdbdb;
+  width: 15%;
+}
+.chat-container .aside-right .user{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chat-container #add-user-form{
+  margin-top: 12px;
 }
